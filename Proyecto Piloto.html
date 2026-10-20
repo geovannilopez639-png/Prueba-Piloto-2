@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Control ESD Línea 12</title>
+
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    background:#f2f2f2;
+    padding:20px;
+}
+
+.tarjeta{
+
+    max-width:800px;
+    margin:auto;
+    background:white;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0px 0px 15px rgba(0,0,0,.2);
+
+}
+
+.encabezado{
+
+    background:#003366;
+    color:white;
+    text-align:center;
+    padding:25px;
+
+}
+
+.encabezado h1{
+
+    margin:0;
+
+}
+
+.encabezado h2{
+
+    margin-top:10px;
+
+}
+
+.contenido{
+
+    padding:25px;
+
+}
+
+.label{
+
+    font-weight:bold;
+    margin-top:20px;
+    color:#555;
+    font-size:18px;
+
+}
+
+.valor{
+
+    font-size:26px;
+    margin-top:5px;
+
+}
+
+.estado{
+
+    text-align:center;
+    color:white;
+    font-size:28px;
+    font-weight:bold;
+    padding:20px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="tarjeta">
+
+    <div class="encabezado">
+
+        <h1>AUDITORÍA ESD</h1>
+
+        <h2>LÍNEA 12</h2>
+
+    </div>
+
+    <div class="contenido">
+
+        <div class="label">Equipo / Estación</div>
+        <div class="valor" id="equipo">
+            Cargando...
+        </div>
+
+        <div class="label">Fecha de Auditoría</div>
+        <div class="valor" id="fecha">
+            Cargando...
+        </div>
+
+        <div class="label">Auditor Responsable</div>
+        <div class="valor" id="auditor">
+            Cargando...
+        </div>
+
+        <div class="label">Supervisor</div>
+        <div class="valor" id="supervisor">
+            Cargando...
+        </div>
+
+        <div class="label">Ingeniero Responsable</div>
+        <div class="valor" id="ingeniero">
+            Cargando...
+        </div>
+
+        <div class="label">Coordinador ESD</div>
+        <div class="valor" id="coordinador">
+            Cargando...
+        </div>
+
+    </div>
+
+    <div id="estado" class="estado">
+
+        Cargando...
+
+    </div>
+
+</div>
+
+<script>
+
+const parametros =
+new URLSearchParams(window.location.search);
+
+const idBuscado =
+parametros.get("id");
+
+fetch("LINEA12.csv")
+
+.then(response => response.text())
+
+.then(data => {
+
+    const filas =
+    data.trim().split("\n");
+
+    let datosEquipo = null;
+
+    for(let i = 1; i < filas.length; i++){
+
+        let fila =
+        filas[i].split(",");
+
+        if(fila[0].trim() === idBuscado){
+
+            datosEquipo = fila;
+
+            break;
+
+        }
+
+    }
+
+    if(datosEquipo == null){
+
+        document.getElementById("estado")
+        .innerHTML = "EQUIPO NO ENCONTRADO";
+
+        document.getElementById("estado")
+        .style.backgroundColor = "gray";
+
+        return;
+
+    }
+
+    document.getElementById("equipo")
+    .innerHTML = datosEquipo[0];
+
+    document.getElementById("fecha")
+    .innerHTML = datosEquipo[2];
+
+    document.getElementById("auditor")
+    .innerHTML = datosEquipo[3];
+
+    document.getElementById("supervisor")
+    .innerHTML = datosEquipo[4];
+
+    document.getElementById("ingeniero")
+    .innerHTML = datosEquipo[5];
+
+    document.getElementById("coordinador")
+    .innerHTML = datosEquipo[6];
+
+    const estado =
+    datosEquipo[1];
+
+    document.getElementById("estado")
+    .innerHTML = estado;
+
+    if(estado === "AUDITADA"){
+
+        document.getElementById("estado")
+        .style.backgroundColor = "#28a745";
+
+    }
+    else{
+
+        document.getElementById("estado")
+        .style.backgroundColor = "#dc3545";
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
